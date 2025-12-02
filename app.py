@@ -85,6 +85,9 @@ def background_training_task():
 
 
 # --- API Endpoints ---
+@app.route('/api/status', methods=['GET'])
+def api_status():
+    return jsonify(config["training"]["last_trained_at"])
 
 @app.route('/upload', methods=['POST'])
 def upload_files():
@@ -121,7 +124,8 @@ def get_index_info():
         "embedding_model": config["models"]["embedding_model"],
         "llm_model": config["models"]["llm_model"],
         "last_trained_at": config["training"]["last_trained_at"],
-        "vectors_indexed": config["training"]["vectors_indexed"]
+        "vectors_indexed": config["training"]["vectors_indexed"],
+        "no_of_files_to_train": config["training"]["no_of_files_to_train"]
     })
 
 @app.route('/files', methods=['GET'])

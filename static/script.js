@@ -3,6 +3,7 @@ $(document).ready(function() {
     const fileInput = $('#file-input');
     const fileListEl = $('#file-list');
     const filesSection = $('#files-section');
+    const syncAlert = $('#sync-alert');
     const trainBtn = $('#train-btn');
     const progressContainer = $('#progress-container');
     const progressBar = $('#progress-bar');
@@ -12,7 +13,8 @@ $(document).ready(function() {
     // Initialization
     fetchFiles();
     fetchInfo();
-    checkTrainingStatus(); 
+    checkTrainingStatus();
+    updateHeaderStatus();
 
     // --- Drag & Drop Logic ---
     // jQuery handles events slightly differently, passing a jQuery event object. 
@@ -60,6 +62,28 @@ $(document).ready(function() {
     }
 
     // --- API Calls (jQuery AJAX) ---
+
+    async function updateHeaderStatus() {
+        try {
+            const data = await $.ajax({ url: '/api/status', type: 'GET' });
+            const badge = $('#nav-status-badge');
+            const dot = $('#nav-status-dot');
+            const text = $('#nav-status-text');
+
+            if(data.last_trained_at) {
+                dot.removeClass('bg-slate-300 bg-red-500').addClass('bg-emerald-500');
+                badge.addClass('border-emerald-200 bg-emerald-50');
+                text.text("Index Active").addClass('text-emerald-700').removeClass('text-slate-500');
+                badge.attr('title', `Last updated: ${data.last_trained_at}`);
+            } else {
+                dot.removeClass('bg-slate-300 bg-emerald-500').addClass('bg-amber-400');
+                text.text("Not Indexed");
+            }
+        } catch(e) {
+            $('#nav-status-dot').addClass('bg-red-500');
+            $('#nav-status-text').text("Offline");
+        }
+    }
 
     async function uploadFiles(formData) {
         // UI indicating upload start
@@ -112,7 +136,6 @@ $(document).ready(function() {
             // Update List
             if (files.length > 0) {
                 fileListEl.empty();
-                // filesSection.removeClass('hidden');
                 trainBtn.prop('disabled', false);
                 
                 $.each(files, function(index, file) {
@@ -144,9 +167,7 @@ $(document).ready(function() {
                 $('.delete-btn').on('click', function() {
                     deleteFile($(this).data('filename'));
                 });
-            } 
-
-            else {
+            } else {
                 // filesSection.addClass('hidden');
                 trainBtn.prop('disabled', true);
             }
@@ -175,6 +196,12 @@ $(document).ready(function() {
             $('#info-last-trained').text(data.last_trained_at || "Never");
             $('#info-model-emb').text(data.embedding_model);
             $('#info-model-llm').text(data.llm_model);
+
+            if (data.pdf_count != parseInt(data.no_of_files_to_train)) {
+                syncAlert.removeClass('hidden').addClass('block');
+            } else {
+                syncAlert.removeClass('block').addClass('hidden');
+            }
         } catch (e) {
             console.log("Could not fetch info");
         }
@@ -192,7 +219,7 @@ $(document).ready(function() {
             next();
         });
     };
-    
+
     trainBtn.on('click', async function() {
         trainBtn.prop('disabled', true);
         try {
