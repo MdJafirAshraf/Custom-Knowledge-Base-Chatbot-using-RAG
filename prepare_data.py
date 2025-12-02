@@ -34,7 +34,7 @@ class PrepareData:
         documents = []
         if os.path.exists(directory_path):
             for filename in os.listdir(directory_path):
-                if filename.endswith(file_extension):
+                if filename.endswith(".txt"):
                     file_path = os.path.join(directory_path, filename)
                     with open(file_path, 'r', encoding='utf-8') as file:
                         content = file.read()
@@ -43,6 +43,13 @@ class PrepareData:
                             metadata={"source": file_path, "filename": filename}
                         )
                         documents.append(doc)
+
+                if filename.endswith(".pdf"):
+                    from langchain.document_loaders import PyPDFLoader
+                    file_path = os.path.join(directory_path, filename)
+                    loader = PyPDFLoader(file_path)
+                    pdf_docs = loader.load()
+                    documents.extend(pdf_docs)
 
         return documents
             
@@ -57,6 +64,7 @@ class PrepareData:
         db = FAISS.from_documents(docs, embeddings)
         db.save_local("vectorstore/faiss_vectorstore")
         print(db.index.ntotal, "documents loaded from the vector store")
+        return db.index.ntotal
 
     # Load embeddings from FAISS vector store
     def load_embeddings(self, embeddings):
@@ -67,20 +75,20 @@ class PrepareData:
 
 
 # check vector folder
-page_content_column = "context"
-dataset_name = "databricks/databricks-dolly-15k"
+# page_content_column = "context"
+# dataset_name = "databricks/databricks-dolly-15k"
 
-prepare_data = PrepareData()
-embeddings = prepare_data.embeddings
+# prepare_data = PrepareData()
+# embeddings = prepare_data.embeddings
 
-if not os.path.exists("vectorstore/faiss_vectorstore"):
-    print("Vector store not found, preparing data...")
-    # data = prepare_data.load_dataset(dataset_name, page_content_column)
-    data = prepare_data.load_data_from_directory("static/uploads", file_extension=".txt")
-    chunks = prepare_data.chunk_text(data)
-    prepare_data.embedding_documents(chunks, embeddings)
+# if not os.path.exists("vectorstore/faiss_vectorstore"):
+#     print("Vector store not found, preparing data...")
+#     # data = prepare_data.load_dataset(dataset_name, page_content_column)
+#     data = prepare_data.load_data_from_directory("static/uploads", file_extension=".pdf")
+#     chunks = prepare_data.chunk_text(data)
+#     prepare_data.embedding_documents(chunks, embeddings)
     
-    print("Data preparation completed.")
-else:
-    print("Vector store found, skipping data preparation.")
-    db = prepare_data.load_embeddings(embeddings)
+#     print("Data preparation completed.")
+# else:
+#     print("Vector store found, skipping data preparation.")
+#     db = prepare_data.load_embeddings(embeddings)

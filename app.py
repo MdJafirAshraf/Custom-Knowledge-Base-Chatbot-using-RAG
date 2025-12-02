@@ -1,10 +1,12 @@
 import os
-import time
 import datetime
 import threading
 import configparser
 from PyPDF2 import PdfReader
 from flask import Flask, render_template, request, jsonify, send_from_directory
+
+from prepare_data import PrepareData
+data_preparation = PrepareData()
 
 app = Flask(__name__)
 
@@ -57,18 +59,19 @@ def background_training_task():
     
     with app.app_context():
         try:
-            training_state.update({"stage": "Extracting pages...", "progress": 10})
+            data = data_preparation.load_data_from_directory("static/uploads", file_extension=".pdf")
+            training_state.update({"stage": "Extracting pages...", "progress": 40})
             
-            training_state.update({"stage": "Chunking text...", "progress": 40})
+            chunks = data_preparation.chunk_text(data)
+            training_state.update({"stage": "Chunking text...", "progress": 60})
             
-            training_state.update({"stage": "Embedding vectors...", "progress": 70})
-            
+            total_vectors = data_preparation.embedding_documents(chunks, data_preparation.embeddings)
+            training_state.update({"stage": "Embedding vectors...", "progress": 80})
             training_state.update({"stage": "Saving index...", "progress": 90})
-            
-            total_vectors = 10 * 150
-            
+                        
             config["training"]["last_trained_at"] = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             config["training"]["vectors_indexed"] = str(total_vectors)
+            config["training"]["no_of_files_to_train"] = str(len(os.listdir(UPLOAD_DIR)))
 
             with open("config.cfg", "w") as f:
                 config.write(f)

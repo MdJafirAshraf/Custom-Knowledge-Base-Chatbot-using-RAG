@@ -9,6 +9,8 @@ $(document).ready(function() {
     const progressBar = $('#progress-bar');
     const progressLabel = $('#progress-label');
     const progressPercent = $('#progress-percent');
+    const impactCurrent = $('#impact-current');
+    const impactEstimated = $('#impact-estimated');
     
     // Initialization
     fetchFiles();
@@ -171,6 +173,8 @@ $(document).ready(function() {
                 // filesSection.addClass('hidden');
                 trainBtn.prop('disabled', true);
             }
+
+            const estVectors = totalPages * 3; 
         } catch (e) {
             console.error("Error fetching files", e);
         }
@@ -196,6 +200,7 @@ $(document).ready(function() {
             $('#info-last-trained').text(data.last_trained_at || "Never");
             $('#info-model-emb').text(data.embedding_model);
             $('#info-model-llm').text(data.llm_model);
+            impactCurrent.text(data.vectors_indexed);
 
             if (data.pdf_count != parseInt(data.no_of_files_to_train)) {
                 syncAlert.removeClass('hidden').addClass('block');
