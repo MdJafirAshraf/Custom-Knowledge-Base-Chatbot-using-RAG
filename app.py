@@ -93,7 +93,17 @@ def list_files():
                 })
     return jsonify(files_data)
 
+@app.route('/files/<filename>', methods=['DELETE'])
+def delete_file(filename):
+    file_path = os.path.join(UPLOAD_DIR, filename)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        return jsonify({"message": f"Deleted {filename}"})
+    return jsonify({"error": "File not found"}), 404
 
+@app.route('/files/view/<filename>', methods=['GET'])
+def view_file(filename):
+    return send_from_directory(UPLOAD_DIR, filename)
 
 
 if __name__ == '__main__':
