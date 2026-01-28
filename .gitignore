@@ -1,3 +1,4 @@
 uploads/
 vectorstore/
 *.pyc
+models/
