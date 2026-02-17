@@ -2,3 +2,6 @@ uploads/
 vectorstore/
 *.pyc
 models/
+.venv/
+.env
+*.md

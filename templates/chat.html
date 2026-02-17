@@ -9,6 +9,7 @@
     <!-- Marked for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         /* Markdown Styles */
@@ -27,7 +28,7 @@
                 
                 <!-- Left: Brand / Logo -->
                 <div class="flex-shrink-0 flex items-center gap-3 cursor-default">
-                    <div class="bg-gradient-to-br from-blue-600 to-indigo-700 text-white p-2 rounded-lg shadow-lg shadow-blue-500/30 transform hover:scale-105 transition-transform duration-200">
+                    <div class="bg-gradient-to-br from-blue-600 to-indigo-700 text-white p-2 px-3 rounded-lg shadow-lg shadow-blue-500/30 transform hover:scale-105 transition-transform duration-200">
                         <i class="fa-solid fa-layer-group text-lg"></i>
                     </div>
                     <div>
@@ -149,6 +150,16 @@
                     </div>
                 </div>
 
+                <!-- Sample User Message -->
+                <div class="flex gap-4 max-w-3xl mx-auto justify-end">
+                    <div class="bg-blue-600 text-white rounded-2xl rounded-br-none p-4 shadow-sm text-sm">
+                        <p>What are the key findings from the latest report?</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 flex-shrink-0">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </div>
+
                 <!-- Dynamic Messages will be injected here -->
             
             </div>
@@ -174,7 +185,7 @@
                         ></textarea>
                         <button 
                             id="send-btn" 
-                            class="absolute right-2 bottom-2.5 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            class="absolute right-2 bottom-2.5 bg-blue-600 hover:bg-blue-700 text-white p-2 px-3 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <i class="fa-solid fa-paper-plane"></i>
                         </button>
