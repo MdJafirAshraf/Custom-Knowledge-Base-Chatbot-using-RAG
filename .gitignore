@@ -4,4 +4,3 @@ vectorstore/
 models/
 .venv/
 .env
-*.md
