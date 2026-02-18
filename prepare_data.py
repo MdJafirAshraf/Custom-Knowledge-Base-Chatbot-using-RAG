@@ -87,7 +87,7 @@ class DataPreparation:
             raise ValueError("Vector store is not initialized. Please ensure the vector store is loaded.")
         
         llm = ChatGroq(
-            model="llama-3.1-8b-instant",  # ✅ valid Groq model
+            model="llama-3.1-8b-instant",
             temperature=0.3,
             max_tokens=256,
             api_key=self.GROQ_API_KEY
