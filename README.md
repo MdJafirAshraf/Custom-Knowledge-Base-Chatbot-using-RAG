@@ -39,7 +39,7 @@ The app handles indexing and retrieval at runtime. You do not need to run `prepa
 Run with `uvicorn` (the `app` object is expected in `app.py`):
 
 ```powershell
-uvicorn app:app --reload --host 127.0.0.1 --port 8000
+uvicorn app:app --reload --host 127.0.0.1
 ```
 
 Open http://127.0.0.1:8000/ in your browser. Use the upload page to add documents and then chat. No other scripts need to be run separately.
